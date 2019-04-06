@@ -72,7 +72,7 @@ class RegisterScreen extends React.Component<{}, State> {
 
   handleCreateAccountPress = () => {
     console.log("Create Account button pressed");
-    fetch('http://localhost:8000/users/register/', {
+    fetch(strings.HOST + '/users/register/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -85,8 +85,15 @@ class RegisterScreen extends React.Component<{}, State> {
     }).then(res => res.json())
     .then(async(response) => {
       console.log('Success:', JSON.stringify(response));
-      await AsyncStorage.setItem('userToken', 'abc');
-      this.props.navigation.navigate('Main');
+      await AsyncStorage.setItem('user_token', response.token);
+      await AsyncStorage.setItem('user_id', '' + response.user_id);
+      await AsyncStorage.setItem('username', this.state.username);
+      this.props.navigation.navigate('Home',
+      {
+        user_token: response.token,
+        username: this.state.username,
+        user_id: response.user_id
+      });
     })
     .catch(error => console.error('Error:', error));
   };
@@ -169,8 +176,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.WHITE,
-    alignItems: "center",
-    justifyContent: "space-between"
+    alignItems: "center"
   },
   logo: {
     flex: 1,
@@ -180,7 +186,7 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     width: "80%"
   }
 });

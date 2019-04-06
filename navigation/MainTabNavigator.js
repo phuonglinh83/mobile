@@ -5,12 +5,30 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import constants from '../config/constants';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
+import VideoScreen from '../screens/VideoScreen';
 import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import HistoryScreen from '../screens/HistoryScreen';
+import FavoriteScreen from '../screens/FavoriteScreen';
+import colors from "../config/colors";
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
-});
+const HomeStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Video: VideoScreen,
+  },
+  {
+    initialRouteName: 'Home',
+    /* The header config from HomeScreen is now here */
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: colors.BLUE,
+      },
+      headerTintColor: colors.WHITE,
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    },
+  });
 
 HomeStack.navigationOptions = {
   tabBarLabel: 'Home',
@@ -37,11 +55,24 @@ LinksStack.navigationOptions = {
 };
 
 const HistoryStack = createStackNavigator({
-  Settings: SettingsScreen,
+  History: HistoryScreen,
+  Video: VideoScreen,
+},
+{
+  initialRouteName: 'History',
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: colors.BLUE,
+    },
+    headerTintColor: colors.WHITE,
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  },
 });
 
 HistoryStack.navigationOptions = {
-  tabBarLabel: 'In Progress',
+  tabBarLabel: 'History',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -51,7 +82,20 @@ HistoryStack.navigationOptions = {
 };
 
 const FavoritesStack = createStackNavigator({
-  Settings: SettingsScreen,
+  Favorite: FavoriteScreen,
+  Video: VideoScreen,
+},
+{
+  initialRouteName: 'Favorite',
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: colors.BLUE,
+    },
+    headerTintColor: colors.WHITE,
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  },
 });
 
 FavoritesStack.navigationOptions = {

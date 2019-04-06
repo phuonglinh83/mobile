@@ -12,15 +12,15 @@ import { WebBrowser } from 'expo';
 
 class VideoList extends React.Component {
   render() {
-    const { videos } = this.props;
+    const { videos, screen } = this.props;
     const videoViews = videos.map((video) =>
-    <View style={styles.container} key={video.video_id}>
-      <TouchableOpacity onPress={() =>this._handleHelpPress(video.video_id)} style={styles.helpLink}>
+    <View style={styles.container} key={video.youtube_id}>
+      <TouchableOpacity onPress={() =>this._handleHelpPress(screen, video)} style={styles.helpLink}>
         <Image
-          source={{uri: 'https://img.youtube.com/vi/' + video.video_id + '/0.jpg'}}
+          source={{uri: 'https://img.youtube.com/vi/' + video.youtube_id + '/0.jpg'}}
           style={styles.videoImage}
         />
-        <Text style={styles.videoTitleText}>{video.description}</Text>
+        <Text style={styles.videoTitleText}>{video.title}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -31,10 +31,9 @@ class VideoList extends React.Component {
   );
   }
 
-  _handleHelpPress = (text) => {
-  const url = 'https://www.youtube.com/embed/'+ text + '?rel=0&autoplay=0&showinfo=0&controls=0';
-  console.log(url);
-    WebBrowser.openBrowserAsync(url);
+  _handleHelpPress = (screen, video) => {
+    screen.props.navigation.push('Video', {title: video.title, video : video});
+    // screen.props.navigation.push('Video', {title: "Video again", video : video});
   };
 }
 

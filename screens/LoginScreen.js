@@ -5,6 +5,8 @@ import {
   KeyboardAvoidingView,
   AsyncStorage,
   StyleSheet,
+  TouchableOpacity,
+  Text,
   View
 } from "react-native";
 import Button from "../components/Button";
@@ -69,9 +71,16 @@ class LoginScreen extends React.Component<{}, State> {
       }),
     }).then(res => res.json())
     .then(async(response) => {
-      console.log('Log in success!', JSON.stringify(response));
-      await AsyncStorage.setItem('userToken', 'abc');
-      this.props.navigation.navigate('Main');
+      console.log('Log in success!', response.user_id);
+      await AsyncStorage.setItem('user_token', response.token);
+      await AsyncStorage.setItem('user_id', '' + response.user_id);
+      await AsyncStorage.setItem('username', this.state.username);
+      this.props.navigation.navigate('Home',
+      {
+        user_token: response.token,
+        username: this.state.username,
+        user_id: response.user_id
+      });
     })
     .catch(error => {
       console.log('Log in failed:', error);
@@ -83,9 +92,12 @@ class LoginScreen extends React.Component<{}, State> {
   };
 
   handleRegisterPress = () => {
-    console.log("Registered button pressed");
-    this.props.navigation.navigate('Register')
+    this.props.navigation.navigate('Register');
   };
+
+  _handleGuest = () => {
+    this.props.navigation.navigate('Home')
+  }
 
   render() {
     const {
@@ -105,7 +117,7 @@ class LoginScreen extends React.Component<{}, State> {
         ? strings.PASSWORD_REQUIRED
         : undefined;
     return (
-      <KeyboardAvoidingView
+      <View
         style={styles.container}
         behavior="padding"
       >
@@ -142,7 +154,8 @@ class LoginScreen extends React.Component<{}, State> {
             onPress={this.handleRegisterPress}
           />
         </View>
-      </KeyboardAvoidingView>
+        <Text style={styles.guestText} onPress={() =>this._handleGuest()}> Continue as guest</Text>
+      </View>
     );
   }
 }
@@ -152,19 +165,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.WHITE,
     alignItems: "center",
-    justifyContent: "space-between"
-  },
-  logo: {
-    flex: 1,
-    width: "100%",
-    resizeMode: "contain",
-    alignSelf: "center"
+    justifyContent: "space-evenly"
   },
   form: {
-    flex: 1,
+    flex: 0.8,
     justifyContent: "center",
     width: "80%"
-  }
+  },
+  guestText: {
+    fontSize: 16,
+    color: colors.BLUE,
+    marginLeft: 12,
+    flex: 0.2
+  },
 });
 
 export default LoginScreen;
