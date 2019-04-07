@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     flex: 0.5
   },
   similarVideoTitleText: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#000',
     marginLeft: 12,
     flex: 0.5,

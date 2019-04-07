@@ -54,7 +54,7 @@ export default class HomeScreen extends React.Component {
       // headerTitleStyle: { alignSelf: 'flex-start', flexDirection: 'row', flex: 1},
       headerRight: (
         <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-          <Item title="search" iconName="ios-search" onPress={() => alert('search')} />
+          <Item title="search" iconName="ios-search" onPress={() => navigation.navigate('Search')} />
           {logInOut}
         </HeaderButtons>
       ),
@@ -93,7 +93,9 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-
+        <Text style={styles.optionsTitleText}>
+          Recommended for you
+        </Text>
           <VideoList
             videos = {this.state.videos}
             screen = {this}
@@ -146,5 +148,12 @@ const styles = StyleSheet.create({
     marginTop: 15,
     alignItems: 'center',
     width: 100,
+  },
+  optionsTitleText: {
+    fontSize: 16,
+    marginTop: 6,
+    marginBottom: 6,
+    textAlign: "center",
+    fontWeight: 'bold',
   },
 });

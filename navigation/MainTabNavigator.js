@@ -5,8 +5,10 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import constants from '../config/constants';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
+import SearchScreen from '../screens/SearchScreen';
 import VideoScreen from '../screens/VideoScreen';
-import LinksScreen from '../screens/LinksScreen';
+import CategoryListScreen from '../screens/CategoryListScreen';
+import CategoryScreen from '../screens/CategoryScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import colors from "../config/colors";
@@ -15,6 +17,7 @@ const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
     Video: VideoScreen,
+    Search: SearchScreen,
   },
   {
     initialRouteName: 'Home',
@@ -40,16 +43,31 @@ HomeStack.navigationOptions = {
   ),
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+const CategoryStack = createStackNavigator({
+  CategoryList: CategoryListScreen,
+  Category: CategoryScreen,
+  Video: VideoScreen,
+},
+{
+  initialRouteName: 'CategoryList',
+  /* The header config from HomeScreen is now here */
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: colors.BLUE,
+    },
+    headerTintColor: colors.WHITE,
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  },
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Inbox',
+CategoryStack.navigationOptions = {
+  tabBarLabel: 'Categories',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={constants.IS_IOS ? 'ios-mail' : 'md-link'}
+      name={constants.IS_IOS ? 'ios-list' : 'md-list'}
     />
   ),
 };
@@ -103,14 +121,14 @@ FavoritesStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-heart' : 'md-options'}
+      name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
     />
   ),
 };
 
 export default createBottomTabNavigator({
   HomeStack,
-  LinksStack,
-  HistoryStack,
+  CategoryStack,
   FavoritesStack,
+  HistoryStack,
 });
