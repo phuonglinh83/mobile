@@ -84,7 +84,7 @@ class RegisterScreen extends React.Component<{}, State> {
       }),
     }).then(res => res.json())
     .then(async(response) => {
-      console.log('Success:', JSON.stringify(response));
+      console.log('Success:', response);
       await AsyncStorage.setItem('user_token', response.token);
       await AsyncStorage.setItem('user_id', '' + response.user_id);
       await AsyncStorage.setItem('username', this.state.username);

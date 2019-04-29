@@ -33,8 +33,8 @@ export default class HistoryScreen extends React.Component {
         results = await fetch(strings.HOST + "/users/" + user_id + "/history", {
                 method: 'GET',
                 headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
                 },
             });
         results = await results.json();

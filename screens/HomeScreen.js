@@ -3,6 +3,7 @@ import {
   Alert,
   AsyncStorage,
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -40,6 +41,7 @@ class LogoTitle extends React.Component {
 export default class HomeScreen extends React.Component {
   state = {
     videos: null,
+    refreshing: false,
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -62,25 +64,35 @@ export default class HomeScreen extends React.Component {
   };
 
   componentDidMount() {
+    this._loadInitialState().done();
+  }
+  async _loadInitialState() {
     this.props.navigation.setParams({ logout: this._logoutAlert });
     this.props.navigation.setParams({ login: this._handleLogin });
     const userId = this.props.navigation.getParam('user_id');
     const requestId = userId === null || userId === undefined ? '0' : userId;
     console.log("UserId: ", requestId);
     // console.log(this.props.navigation);
-    fetch(strings.HOST + "/users/" + requestId + "/recommend/" + constants.TOP_K_RECOMMENDATIONS, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(res => {
-      // console.log(res);
-      this.setState({videos:res});
+    try {
+      results = await fetch(strings.HOST + "/users/" + requestId + "/recommend/" + constants.TOP_K_RECOMMENDATIONS, {
+                  method: 'GET',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                  },
+                });
+      results = await results.json();
+      this.setState({videos:results});
+    } catch (error) {
+      console.log(error);
     }
-    );
   }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this._loadInitialState().done();
+    this.setState({refreshing: false});
+ }
 
   render() {
     if (this.state.videos === null) {
@@ -92,7 +104,13 @@ export default class HomeScreen extends React.Component {
     }
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+            />
+          }>
         <Text style={styles.optionsTitleText}>
           Recommended for you
         </Text>
