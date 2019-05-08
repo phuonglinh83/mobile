@@ -117,9 +117,9 @@ class LoginScreen extends React.Component<{}, State> {
         ? strings.PASSWORD_REQUIRED
         : undefined;
     return (
-      <View
+      <KeyboardAvoidingView
         style={styles.container}
-        behavior="padding"
+        behavior="height"
       >
         <View style={styles.form}>
           <FormTextInput
@@ -155,7 +155,7 @@ class LoginScreen extends React.Component<{}, State> {
           />
         </View>
         <Text style={styles.guestText} onPress={() =>this._handleGuest()}> Continue as guest</Text>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

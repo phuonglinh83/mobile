@@ -13,6 +13,7 @@ import {
 import { Icon } from 'react-native-elements';
 import { WebBrowser } from 'expo';
 import colors from "../config/colors";
+import Input from "../components/Input";
 import constants from "../config/constants";
 import strings from "../config/strings";
 import Layout from "../config/Layout";
@@ -24,6 +25,7 @@ export default class VideoScreen extends React.Component {
     save: null,
     watch: null,
     user_id: null,
+    comments: [],
   }
 
   static navigationOptions = ({navigation}) => {
@@ -77,6 +79,19 @@ export default class VideoScreen extends React.Component {
     } catch (error) {
       console.log(error);
     }
+    try {
+      res = await fetch(strings.HOST + "/videos/" + video.video_id + "/comments", {
+              method: 'GET',
+              headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              },
+          });
+      res = await res.json();
+      this.setState({comments:res});
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
@@ -92,6 +107,12 @@ export default class VideoScreen extends React.Component {
       </TouchableOpacity>
     </View>
     );
+    const commentViews = this.state.comments.map(comment =>
+      <View style={styles.commentBox} key={comment.username + comment.created_time}>
+        <Text style={styles.userCommentText}>{comment.username} - {comment.created_time}</Text>
+        <Text style={styles.commentText}>{comment.content}</Text>
+      </View>
+    )
     const { navigation } = this.props;
     const video = navigation.getParam('video');
     const likeColor = this._getButtonColor(this.state.like == 1);
@@ -107,36 +128,64 @@ export default class VideoScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
-        <View style={styles.iconRow}>
-          <Icon
-            name='play'
-            type='font-awesome'
-            color={colors.BLUE}
-            onPress={() => this._playVideo(video.youtube_id)} />
-          <Icon
-            name='thumbs-o-up'
-            type='font-awesome'
-            color={likeColor}
-            onPress={() => this._handleAction('LIKE', this.state.like == 1 ? 0 : 1)} />
-          <Icon
-            name='thumbs-o-down'
-            type='font-awesome'
-            color={dislikeColor}
-            onPress={() => this._handleAction('LIKE', this.state.like == -1 ? 0 : -1)} />
-          <Icon
-            name='heart'
-            type='font-awesome'
-            color={saveColor}
-            onPress={() => this._handleAction('SAVE', this.state.save == 1 ? 0 : 1)} />
-        </View>
-        <View style={styles.description}>
-          <Text style={styles.videoTitleText}>{video.description}</Text>
-        </View>
-        <View style={styles.similarVideos}>
-          {similarVideoViews}
-        </View>
+          <View style={styles.iconRow}>
+            <Icon
+              name='play'
+              type='font-awesome'
+              color={colors.BLUE}
+              onPress={() => this._playVideo(video.youtube_id)} />
+            <Icon
+              name='thumbs-o-up'
+              type='font-awesome'
+              color={likeColor}
+              onPress={() => this._handleAction('LIKE', this.state.like == 1 ? 0 : 1)} />
+            <Icon
+              name='thumbs-o-down'
+              type='font-awesome'
+              color={dislikeColor}
+              onPress={() => this._handleAction('LIKE', this.state.like == -1 ? 0 : -1)} />
+            <Icon
+              name='heart'
+              type='font-awesome'
+              color={saveColor}
+              onPress={() => this._handleAction('SAVE', this.state.save == 1 ? 0 : 1)} />
+          </View>
+          <View style={styles.description}>
+            <Text style={styles.videoTitleText}>{video.description}</Text>
+          </View>
+          <View style={styles.similarVideos}>
+            {similarVideoViews}
+          </View>
+          <View style={styles.commentCaption}>
+            <Text style={styles.commentCaptionText}>Comments {this.state.comments.length}</Text>
+          </View>
+          <Input onSubmit={this._submitComment} />
+          {commentViews}
+
+          <View style={styles.paddingBox}/>
+
         </ScrollView>
     );
+  }
+
+  _submitComment = async (text) => {
+    console.log(text);
+    const video = this.props.navigation.getParam('video');
+    try {
+      res = await fetch(strings.HOST + '/videos/' + video.video_id + '/comment/' + this.state.user_id, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: text,
+        }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    this._loadInitialState().done();
   }
 
   _getButtonColor = (enable) => {
@@ -227,5 +276,41 @@ const styles = StyleSheet.create({
     color: '#000',
     marginLeft: 12,
     flex: 0.5,
+  },
+  commentCaption: {
+    marginTop: 10,
+    marginLeft: 15,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#EEE',
+  },
+  commentBox: {
+    marginTop: 10,
+    marginLeft: 15,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#EEE',
+  },
+  commentCaptionText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#000',
+  },
+  userCommentText: {
+    marginTop: 10,
+    fontSize: 12,
+    color: '#555',
+  },
+  commentText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: '#000',
+  },
+  paddingBox: {
+    marginTop: 10,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#EEE',
+    padding: 100,
   },
 });
