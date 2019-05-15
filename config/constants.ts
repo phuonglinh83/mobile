@@ -5,7 +5,7 @@ const constants = {
   IS_ANDROID: Platform.OS === "android",
   IS_IOS: Platform.OS === "ios",
   IS_DEBUG_MODE_ENABLED: Boolean(window.navigator.userAgent),
-  TOP_K_RECOMMENDATIONS: 10,
+  TOP_K_RECOMMENDATIONS: 12,
   TOP_K_SIMILAR_VIDEOS: 10,
 };
 

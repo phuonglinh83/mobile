@@ -58,7 +58,6 @@ class LoginScreen extends React.Component<{}, State> {
   };
 
   handleLoginPress = () => {
-    console.log("Login button pressed. Username: " + this.state.username + ", password: " + this.state.password);
     fetch(strings.HOST + "/users/login/", {
       method: 'POST',
       headers: {
@@ -119,7 +118,7 @@ class LoginScreen extends React.Component<{}, State> {
     return (
       <KeyboardAvoidingView
         style={styles.container}
-        behavior="height"
+        behavior="padding"
       >
         <View style={styles.form}>
           <FormTextInput

@@ -94,7 +94,7 @@ HistoryStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={constants.IS_IOS ? 'ios-bookmark' : 'md-options'}
+      name={constants.IS_IOS ? 'ios-hourglass' : 'md-hourglass'}
     />
   ),
 };

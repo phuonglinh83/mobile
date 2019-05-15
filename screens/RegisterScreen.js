@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   AsyncStorage,
@@ -30,11 +31,29 @@ class RegisterScreen extends React.Component<{}, State> {
     confirmPassword: "",
     usernameTouched: false,
     passwordTouched: false,
-    confirmPasswordTouched: false
+    confirmPasswordTouched: false,
+    validUser: true
   };
 
   handleUsernameChange = (username: string) => {
-    this.setState({ username: username });
+    this.setState({username: username});
+    fetch(strings.HOST + '/users/find', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username,
+      }),
+    }).then(res => res.json())
+    .then(res => {
+      if (res.user_id < 0) {
+        this.setState({validUser: true});
+      } else {
+        this.setState({validUser: false})
+      }
+    });
   };
 
   handlePasswordChange = (password: string) => {
@@ -71,7 +90,6 @@ class RegisterScreen extends React.Component<{}, State> {
   };
 
   handleCreateAccountPress = () => {
-    console.log("Create Account button pressed");
     fetch(strings.HOST + '/users/register/', {
       method: 'POST',
       headers: {
@@ -84,7 +102,6 @@ class RegisterScreen extends React.Component<{}, State> {
       }),
     }).then(res => res.json())
     .then(async(response) => {
-      console.log('Success:', response);
       await AsyncStorage.setItem('user_token', response.token);
       await AsyncStorage.setItem('user_id', '' + response.user_id);
       await AsyncStorage.setItem('username', this.state.username);
@@ -95,7 +112,13 @@ class RegisterScreen extends React.Component<{}, State> {
         user_id: response.user_id
       });
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+      console.log('Register failed!', error);
+      Alert.alert(
+        'Username exists',
+        'Please try again with different username!'
+      );
+    })
   };
 
   render() {
@@ -105,14 +128,15 @@ class RegisterScreen extends React.Component<{}, State> {
       confirmPassword,
       usernameTouched,
       passwordTouched,
-      confirmPasswordTouched
+      confirmPasswordTouched,
+      validUser
     } = this.state;
     // Show the validation errors only when the inputs
     // are empty AND have been blurred at least once
     const usernameError =
       !username && usernameTouched
         ? strings.USERNAME_REQUIRED
-        : undefined;
+        : (!validUser ? "Username exists" : undefined);
     const passwordError =
       !password && passwordTouched
         ? strings.PASSWORD_REQUIRED
@@ -124,7 +148,7 @@ class RegisterScreen extends React.Component<{}, State> {
     return (
       <KeyboardAvoidingView
         style={styles.container}
-        behavior="padding"
+        behavior="height"
       >
 
         <View style={styles.form}>
@@ -163,7 +187,7 @@ class RegisterScreen extends React.Component<{}, State> {
           />
           <Button
             label={strings.CREATE_ACCOUNT}
-            disabled={!username || !password || password != confirmPassword}
+            disabled={!username || !password || password != confirmPassword || !validUser}
             onPress={this.handleCreateAccountPress}
           />
         </View>

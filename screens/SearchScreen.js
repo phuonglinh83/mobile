@@ -37,7 +37,6 @@ export default class SearchScreen extends React.Component {
 
   updateSearch = search => {
     this.setState({ search: search });
-    console.log("Search for " + this.state.search);
     fetch(strings.HOST + '/users/' + this.state.user_id + '/search', {
       method: 'POST',
       headers: {

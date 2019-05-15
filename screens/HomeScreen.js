@@ -47,10 +47,8 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const userToken = navigation.getParam('user_token', 'None');
     const username = navigation.getParam('username', 'Anonymous');
-    // console.log(userToken);
     const logInOut = userToken != 'None' ? <Item title={username} onPress={navigation.getParam('logout')} /> :
 <Item title=' Log In' onPress={navigation.getParam('login')} />;
-    // console.log(logInOut);
     return {
       headerLeft: <LogoTitle/>,
       // headerTitleStyle: { alignSelf: 'flex-start', flexDirection: 'row', flex: 1},
@@ -71,8 +69,7 @@ export default class HomeScreen extends React.Component {
     this.props.navigation.setParams({ login: this._handleLogin });
     const userId = this.props.navigation.getParam('user_id');
     const requestId = userId === null || userId === undefined ? '0' : userId;
-    console.log("UserId: ", requestId);
-    // console.log(this.props.navigation);
+    // console.log("UserId: ", requestId);
     try {
       results = await fetch(strings.HOST + "/users/" + requestId + "/recommend/" + constants.TOP_K_RECOMMENDATIONS, {
                   method: 'GET',
@@ -118,12 +115,6 @@ export default class HomeScreen extends React.Component {
             videos = {this.state.videos}
             screen = {this}
           />
-          <View style={styles.logoutContainer}>
-            <Button
-              label="LOG OUT"
-              onPress={this._handleLogout}
-              />
-          </View>
         </ScrollView>
       </View>
     );

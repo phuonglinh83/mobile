@@ -26,6 +26,7 @@ export default class VideoScreen extends React.Component {
     watch: null,
     user_id: null,
     comments: [],
+    categories: []
   }
 
   static navigationOptions = ({navigation}) => {
@@ -92,6 +93,20 @@ export default class VideoScreen extends React.Component {
     } catch (error) {
       console.log(error);
     }
+
+    try {
+      res = await fetch(strings.HOST + "/videos/" + video.video_id + "/categories", {
+              method: 'GET',
+              headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              },
+          });
+      res = await res.json();
+      this.setState({categories:res});
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
@@ -113,6 +128,7 @@ export default class VideoScreen extends React.Component {
         <Text style={styles.commentText}>{comment.content}</Text>
       </View>
     )
+    const categoryString = this._getCategoryString(this.state.categories);
     const { navigation } = this.props;
     const video = navigation.getParam('video');
     const likeColor = this._getButtonColor(this.state.like == 1);
@@ -152,6 +168,7 @@ export default class VideoScreen extends React.Component {
           </View>
           <View style={styles.description}>
             <Text style={styles.videoTitleText}>{video.description}</Text>
+            <Text style={styles.videoCategoryText}>Categories: {categoryString}</Text>
           </View>
           <View style={styles.similarVideos}>
             {similarVideoViews}
@@ -169,7 +186,6 @@ export default class VideoScreen extends React.Component {
   }
 
   _submitComment = async (text) => {
-    console.log(text);
     const video = this.props.navigation.getParam('video');
     try {
       res = await fetch(strings.HOST + '/videos/' + video.video_id + '/comment/' + this.state.user_id, {
@@ -186,6 +202,18 @@ export default class VideoScreen extends React.Component {
       console.log(error);
     }
     this._loadInitialState().done();
+  }
+
+  _getCategoryString = (categories) => {
+    var catString = '';
+    if (categories.length > 0) {
+      catString = catString + categories[0].name;
+      var i;
+      for (i = 1; i < categories.length; i++) {
+        catString = catString + ", " + categories[i].name;
+      }
+    }
+    return catString;
   }
 
   _getButtonColor = (enable) => {
@@ -253,9 +281,14 @@ const styles = StyleSheet.create({
     flex : 1,
   },
   videoTitleText: {
-    fontSize: 20,
+    fontSize: 18,
     color: '#2e78b7',
     marginTop: 5,
+  },
+  videoCategoryText: {
+    fontSize: 14,
+    color: '#888',
+    marginTop: 8,
   },
   similarVideos: {
     flex: 1,

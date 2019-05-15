@@ -45,18 +45,6 @@ export default class CategoryScreen extends React.Component {
   }
 
   render() {
-    // const videos = this.state.videos;
-    // const videoViews = videos.map((video) =>
-    // <View style={styles.videoRow} key={video.youtube_id}>
-    //   <TouchableOpacity onPress={() =>this._handleVideoClick(video)} style={styles.videoRow}>
-    //     <Image
-    //       source={{uri: 'https://img.youtube.com/vi/' + video.youtube_id + '/0.jpg'}}
-    //       style={styles.videoImage}
-    //     />
-    //     <Text style={styles.videoTitleText}>{video.title}</Text>
-    //   </TouchableOpacity>
-    // </View>
-    // );
     return (
         <ScrollView style={styles.container}>
           <VideoList
