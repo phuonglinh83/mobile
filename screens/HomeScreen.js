@@ -71,14 +71,16 @@ export default class HomeScreen extends React.Component {
     const requestId = userId === null || userId === undefined ? '0' : userId;
     // console.log("UserId: ", requestId);
     try {
+      token = await AsyncStorage.getItem('user_token');
       results = await fetch(strings.HOST + "/users/" + requestId + "/recommend/" + constants.TOP_K_RECOMMENDATIONS, {
                   method: 'GET',
                   headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
                   },
                 });
-      results = await results.json();
+      results = await results.json({'status':'OK'});
       this.setState({videos:results});
     } catch (error) {
       console.log(error);

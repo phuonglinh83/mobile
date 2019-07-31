@@ -24,6 +24,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Videos for special need children support",
+    "githubUrl": "https://github.com/phuonglinh83/mobile.git"
   }
 }
