@@ -30,7 +30,7 @@ class LogoTitle extends React.Component {
   render() {
     return (
       <Image
-        source={require('../assets/images/robot-dev.png')}
+        source={require('../assets/images/app_icon.png')}
         style={{ width: 30, height: 30, marginLeft: 4 }}
       />
     );
